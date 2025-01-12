@@ -7,6 +7,10 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+// #mapping 
+// #navi
+// #remapping
+
 class SwitchModeNode : public rclcpp::Node {
 public:
     SwitchModeNode()
@@ -17,7 +21,7 @@ public:
             std::bind(&SwitchModeNode::modeCallback, this, std::placeholders::_1));
 
         // Initial launch setup (slam_toolbox)
-        current_mode_ = "slam_toolbox";
+        current_mode_ = "navi";
         startLaunch(slam_toolbox_package_, slam_toolbox_launch_);
     }
 
@@ -50,11 +54,11 @@ private:
         shutdownLaunch();
 
         // Start the appropriate launch file
-        if (mode == "slam_toolbox") {
-            startLaunch(slam_toolbox_package_, slam_toolbox_launch_);
-        } else if (mode == "navigation") {
-            startLaunch(navigation_package_, navigation_launch_);
-        } else if (mode == "gazebo") {
+        if (mode == "navi") {
+            startLaunch(slam_toolbox_package_, navigation_launch_);
+        } else if (mode == "mapping") {
+            startLaunch(navigation_package_, slam_toolbox_launch_ );
+        } else if (mode == "remapping") {
             startLaunch(gazebo_package_, gazebo_launch_);
         } else {
             RCLCPP_WARN(this->get_logger(), "Unknown mode '%s'.", mode.c_str());
